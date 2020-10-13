@@ -1,0 +1,43 @@
+//https://www.realtor.com/soldhomeprices/Brooklyn_NY
+
+const els = document.querySelectorAll(".js-component_property-card")
+const elsArr = Array.from(els)
+
+const now = new Date()
+const options = { year: 'numeric', month: 'long', day: 'numeric', timeZone: "America/New_York" };
+const today = now.toLocaleDateString('en-US', options)
+
+const yesterdayRaw = new Date((now.setDate(now.getDate()-1)))
+const yesterday = yesterdayRaw.toLocaleDateString('en-US', options)
+
+//globals for console testing:
+ soldToday = []
+
+ soldYesterday = []
+ soldYesterdayData = []
+
+elsArr.forEach( (el, index) => {
+	const text = el.querySelector("[data-label=property-label-sold]").innerText
+	
+	if (text.includes(today) || text.includes(today.toUpperCase())) {
+        console.log(text)
+		soldToday.push(el)
+	}
+	if (text.includes(yesterday) || text.includes(yesterday.toUpperCase())){
+	    console.log(text)
+	    soldYesterday.push(el)
+	}
+})
+
+soldYesterday.forEach( (el, index) => {
+    let price = el.querySelector(".data-price").innerText
+    let beds = el.querySelector("[data-label=property-meta-beds]").children[0].innerText
+    let bathrooms = el.querySelector("[data-label=property-meta-baths]").children[0].innerText
+    let sqFt = el.querySelector("[data-label=property-meta-sqft]").children[0].innerText
+    let postalCode = el.querySelector(".listing-postal").innerText
+    soldYesterdayData.push( { price, beds, bathrooms, sqFt, postalCode } )
+
+})
+
+console.log('soldYesterdayData:')
+console.dir(soldYesterdayData)

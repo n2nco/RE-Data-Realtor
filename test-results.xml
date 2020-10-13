@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="3.5410000000000004" tests="7" failures="0">
+  <testsuite name="Root Suite" timestamp="2020-10-11T15:58:39" tests="0" file="cypress/integration/examples/network_requests.spec.js" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Network Requests" timestamp="2020-10-11T15:58:39" tests="7" failures="0" time="3.5410000000000004">
+    <testcase name="Network Requests cy.server() - control behavior of network requests and responses" time="0.478" classname="cy.server() - control behavior of network requests and responses">
+    </testcase>
+    <testcase name="Network Requests cy.request() - make an XHR request" time="0.46" classname="cy.request() - make an XHR request">
+    </testcase>
+    <testcase name="Network Requests cy.request() - verify response using BDD syntax" time="0.4" classname="cy.request() - verify response using BDD syntax">
+    </testcase>
+    <testcase name="Network Requests cy.request() with query parameters" time="0.337" classname="cy.request() with query parameters">
+    </testcase>
+    <testcase name="Network Requests cy.request() - pass result to the second request" time="0.46" classname="cy.request() - pass result to the second request">
+    </testcase>
+    <testcase name="Network Requests cy.request() - save response in the shared test context" time="0.382" classname="cy.request() - save response in the shared test context">
+    </testcase>
+    <testcase name="Network Requests cy.route() - route responses to matching requests" time="1.024" classname="cy.route() - route responses to matching requests">
+    </testcase>
+  </testsuite>
+</testsuites>
