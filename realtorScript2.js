@@ -83,6 +83,7 @@ const extractData = (soldElArray) => {
 Object.keys(city).forEach((date, index) => {
     if (!(city[date].soldEls === undefined )) {
         city[date].soldProperties = extractData(city[date].soldEls) 
+        delete city[date].soldEls //delete els once data is extracted
     } 
 })
 

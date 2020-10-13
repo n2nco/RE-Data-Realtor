@@ -1,4 +1,4 @@
-const REGIONS_ARR = require('./variables')
+const REGIONS_ARR = require('./variables').REGIONS_ARR
 const shell = require('shelljs');
 
 
@@ -18,9 +18,8 @@ const addToArrProto = () => {
 
 const changePiaRegion = () => {
    addToArrProto()
-   console.log('typeof REGIONS_ARR')
-   console.log(typeof REGIONS_ARR)
-   const newRegion = REGIONS_ARR.random(1)[0]
+
+   const newRegion = REGIONS_ARR.random(1)
    shell.exec(`piactl set region ${newRegion}`)
 }
 

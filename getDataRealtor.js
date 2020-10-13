@@ -2,6 +2,9 @@
 const { Builder, By, Key, until, Capabilities } = require('selenium-webdriver')
 //require the following 2 lines for testing as doesn't run index.js:
 const path = require('path')
+const changePiaRegion = require('./pia').changePiaRegion
+const sleep = require('./lib').sleep
+
 require('dotenv').config({path: path.resolve(__dirname+'/.env')});
 // let { /*defaultNdate,*/ dateMinusDays, cities } = require('./scriptVarLib')
 // let { saveDataToMongo, saveDataToMongo2 } = require('./mongoLib');
@@ -19,22 +22,37 @@ module.exports = getData = async function(url="https://www.realtor.com/soldhomep
          "--lang=en",
          "--no-sandbox",
          "--disable-dev-shm-usage",
-         // '-headless',
+          '-headless',
+          `user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36`, //I get blocked without this - https://stackoverflow.com/questions/55364643/headless-browser-detection
          "disable-infobars",
          '--disable-gpu'
       ]
    });
+   chromeCapabilities.setPageLoadStrategy("none")//testing this out
+   
+
    let driver
    let data
    try{
     driver = await new Builder().forBrowser('chrome').withCapabilities(chromeCapabilities).build()
+    
     await driver.get(url)
+    await driver.sleep(3400)
     await driver.manage().window().setRect(1308, 877)
     await driver.sleep(1400)
-    console.log('test - returning title')
-    let test = await driver.executeScript(`return document.title`)
    
-    console.log(test)
+    let title = await driver.executeScript(`return document.title`)
+    console.log('document title')
+    console.log(title)
+
+    if (title === "Pardon Our Interruption") {
+      console.log('blocked getting city: ' + url.split('/').pop())
+      await driver?.close()
+      await driver?.quit() 
+      changePiaRegion()
+      sleep(5000)
+      return 'hadToChangeRegion' //try again with new IP //should i 'return getData(url)
+   }
     await driver.sleep(1400)
     await driver.executeScript(realtorScript2)
    //  soldTodayData = await driver.executeScript(`return window.soldTodayData`)
