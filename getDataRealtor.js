@@ -22,7 +22,7 @@ module.exports = getData = async function(url="https://www.realtor.com/soldhomep
          "--lang=en",
          "--no-sandbox",
          "--disable-dev-shm-usage",
-          '-headless',
+         //  '-headless',
           `user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36`, //I get blocked without this - https://stackoverflow.com/questions/55364643/headless-browser-detection
          "disable-infobars",
          '--disable-gpu'
@@ -32,7 +32,7 @@ module.exports = getData = async function(url="https://www.realtor.com/soldhomep
    
 
    let driver
-   let data
+   let data = []
    try{
     driver = await new Builder().forBrowser('chrome').withCapabilities(chromeCapabilities).build()
     
@@ -40,26 +40,41 @@ module.exports = getData = async function(url="https://www.realtor.com/soldhomep
     await driver.sleep(3400)
     await driver.manage().window().setRect(1308, 877)
     await driver.sleep(1400)
-   
-    let title = await driver.executeScript(`return document.title`)
-    console.log('document title')
-    console.log(title)
 
-    if (title === "Pardon Our Interruption") {
-      console.log('blocked getting city: ' + url.split('/').pop())
-      await driver?.close()
-      await driver?.quit() 
-      changePiaRegion()
-      sleep(5000)
-      return 'hadToChangeRegion' //try again with new IP //should i 'return getData(url)
-   }
-    await driver.sleep(1400)
-    await driver.executeScript(realtorScript2)
+    await driver.sleep(2400)
+
+    let page = 1
+    do {
+   
+      let title = await driver.executeScript(`return document.title`)
+      console.log('document title')
+      console.log(title)
+      console.log('scraping page ' + page + '.')
+  
+      if (title === "Pardon Our Interruption") {
+        console.log('blocked getting city: ' + url.split('/').pop())
+        await driver?.close()
+        await driver?.quit() 
+        changePiaRegion()
+        sleep(5000)
+        return 'hadToChangeRegion' //try again with new IP //should i 'return getData(url)
+     }
+
+       let { nextPageNeedsScraping, lastElDate, city: cityData } = await driver.executeScript(realtorScript2)
+       global.nextPageNeedsScraping = nextPageNeedsScraping //include in parent scope
+       console.log('does next page: (' + (page + 1) + ') need scraping? ' + nextPageNeedsScraping)
+       cityData.lastElDate = lastElDate //to keep track of for merge
+       data.push(cityData) 
+       page++
+       await driver.sleep(2400)
+   } while (nextPageNeedsScraping)
+
+    //for now, scrape a maximum of 2 pages?
    //  soldTodayData = await driver.executeScript(`return window.soldTodayData`)
    //  soldYesterdayData = await driver.executeScript(`return window.soldYesterdayData`)
    //  soldTwoDaysAgoData = await driver.executeScript(`return window.soldTwoDaysAgoData`)
-    data = await driver.executeScript(`return window.city`)
-    console.log('data:')
+    
+    console.log(url.split('/').pop() + ' data:')
     console.log(data)
    } catch(e) {
       console.log('error in driving realtor.com  ' + e)

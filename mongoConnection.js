@@ -43,8 +43,9 @@ let testInsert = () => {
 
 const cleanup = () => {
    // let publicVars = require('./routes/data').publicVars
-   publicVars?.db?.close(); // Close MongodDB Connection when Process ends. only close here?
+   // publicVars?.db?.close(); // Close MongodDB Connection when Process ends. only close here?
    // console.log('cleaned up')
+    db?.close()
    process.exit()
 }
 
